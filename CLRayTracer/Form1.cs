@@ -62,12 +62,6 @@ namespace CLRayTracer
             spheres.Add(new Sphere(2.5f, 1.0f, 0.0f, new float3(2.8f, 2.5f, 0), new float3(0.0f, 1.0f, 0.0f)));
             for (int i = 0; i < 100; i++)
             {
-                if (i == 0)
-                {
-                    spheres.Add(GenSphere());
-                    continue;
-                }
-
                 while (true)
                 {
                     Sphere sphere = GenSphere();
