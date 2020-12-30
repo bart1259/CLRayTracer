@@ -9,9 +9,6 @@ using OpenCL.Net;
 
 namespace CLRayTracer
 {
-    /// <summary>
-    /// photo credit: Sitoo <a href="http://www.flickr.com/photos/7470842@N04/49659142176">Serra del Cavall Bernat, Pollença, Mallorca</a> via <a href="http://photopin.com">photopin</a> <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/">(license)</a>
-    /// </summary>
     public partial class Form1 : Form
     {
         private RenderEngine _renderEngine;
