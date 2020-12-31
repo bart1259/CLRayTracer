@@ -1,6 +1,4 @@
-﻿#pragma OPENCL EXTENSION cl_khr_fp64 : enable
-
-struct Ray {
+﻿struct Ray {
 	float3 origin;
 	float3 dir;
 };
@@ -22,13 +20,15 @@ struct Disk {
 };
 
 struct Camera {
-	float3 position;
-	float3 rotation;
 	float fov;
 	int depth;
+	float3 position;
+	float3 rotation;
 };
 
-__constant float3 lightPosition = (float3)(-5.0, 10.0, 5.0);
+
+__constant float3 lightPosition = (float3)(-5.0f, 10.0f, 5.0f);
+const float pi = 3.14159265358979f;
 const sampler_t bgSampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_REPEAT | CLK_FILTER_LINEAR;
 
 //https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
@@ -36,7 +36,7 @@ float intersect_ray_plane(const struct Ray* ray, const struct Disk* disk, struct
 { 
     // assuming vectors are all normalized
     float denom = dot(disk->normal, ray->dir); 
-    if (denom > 1e-6) { 
+    if (denom > 1e-6f) { 
         float3 p0l0 = disk->pos - ray->origin; 
         float t = dot(p0l0, disk->normal) / denom; 
 
@@ -45,7 +45,7 @@ float intersect_ray_plane(const struct Ray* ray, const struct Disk* disk, struct
 
         return t; 
     } 
-	if (denom < -1e-6) { 
+	if (denom < -1e-6f) { 
         float3 p0l0 = disk->pos - ray->origin; 
         float t = dot(p0l0, disk->normal) / denom; 
 
@@ -110,17 +110,17 @@ float intersect_ray_sphere(const struct Ray* ray, const struct Sphere* sphere, s
 
 float2 getSphereUV(float3 dir){
 
-	float u = 0.5 + (atan2(dir.x, dir.z) / (2 * M_PI));
-	float v = 0.5 - (asin(dir.y) / M_PI);
+	float u = 0.5f + (atan2(dir.x, dir.z) / (2 * pi));
+	float v = 0.5f - (asin(dir.y) / pi);
 	return (float2)(u, v);
 }
 
 float3 refractRay(float3 normal, float3 incident, float ior){
 
     float cosI = fabs(dot(normal, incident));
-    float sinT2 = ior * ior * (1.0 - cosI * cosI);
-    //if(sinT2 > 1.0) return Vector::invalid; // TIR
-    float cosT = sqrt(1.0 - sinT2);
+    float sinT2 = ior * ior * (1.0f - cosI * cosI);
+    //if(sinT2 > 1.0f) return Vector::invalid; // TIR
+    float cosT = sqrt(1.0f - sinT2);
     return normalize(ior * incident + (ior * cosI - cosT) * normal);
 }
 
@@ -135,10 +135,10 @@ float4 traceScene(struct Ray* ray,
 	struct Ray currentRay;
 	struct Ray newRay = (*ray);
 	
-	float currentIOR = 1.0;
-	float residualIntensity = 1.0;
-	float totalIntensity = 0.0;
-	float4 color = (float4)(0.0,0.0,0.0,1.0);
+	float currentIOR = 1.0f;
+	float residualIntensity = 1.0f;
+	float totalIntensity = 0.0f;
+	float4 color = (float4)(0.0f, 0.0f, 0.0f, 1.0f);
 
 	for(int depth = 0; depth < maxDepth; depth++){
 		
@@ -146,10 +146,10 @@ float4 traceScene(struct Ray* ray,
 
 		//Object that was hit's reflectivity
 		float objectReflectivity = 0.0f;
-		float4 objectColor = (float4)(0.0, 0.0, 1.0, 1.0);
+		float4 objectColor = (float4)(0.0f, 0.0f, 1.0f, 1.0f);
 
 		bool hit = false;
-		float tn = 1e20;
+		float tn = 1e20f;
 
 		//Ray trace spheres
 		for(int i = 0; i < sphereCount; i++) {
@@ -166,7 +166,7 @@ float4 traceScene(struct Ray* ray,
 					
 					float brightness = dot(normal.dir, normalize(lightPosition - normal.origin));
 					if (brightness < 0) {
-						objectColor = (float4)(0.0, 0.0, 0.0, 1.0f);
+						objectColor = (float4)(0.0f, 0.0f, 0.0f, 1.0f);
 					} else {
 						objectColor = (float4)(brightness * sphere.color, 1.0f);
 					}
@@ -180,7 +180,7 @@ float4 traceScene(struct Ray* ray,
 						newRay = reflectRay;
 					} else {
 
-						float objectIOR = dot(currentRay.dir, currentRay.origin - sphere.pos) > 0 ? sphere.ior : 1.0/ sphere.ior;
+						float objectIOR = dot(currentRay.dir, currentRay.origin - sphere.pos) > 0 ? sphere.ior : 1.0f / sphere.ior;
 								
 						struct Ray refractedRay;
 						refractedRay.origin = normal.origin;
@@ -263,12 +263,12 @@ __kernel void render(int width,
 	//Calculate aspect ratio
 	float aspectRatio = (float)width / (float)height;
 
-	float fieldOfView = tan(fov / 2 * M_PI / 180);
+	float fieldOfView = tan(fov / 2 * pi / 180.0f);
 
 	if (x < width && y < height) {
 		//Calculate screen mapping, -0.5 being left and +0.5 being right
-		float fx = aspectRatio * fieldOfView * (2 * ((x + 0.5) / width) - 1);
-		float fy = (1 - (2 * (y + 0.5) / height)) * fieldOfView; 
+		float fx = aspectRatio * fieldOfView * (2 * ((x + 0.5f) / width) - 1);
+		float fy = (1 - (2 * (y + 0.5f) / height)) * fieldOfView; 
 
 		//Create camera ray
 		struct Ray ray;

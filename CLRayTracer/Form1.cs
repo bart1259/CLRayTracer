@@ -161,14 +161,14 @@ namespace CLRayTracer
 
             if (InputManager.Instance.IsKeyPressed(Keys.Q))
             {
-                _camera.rotation = new float3(_camera.rotation.x, _camera.rotation.y - ((float)_deltaTime * rotationSpeed), _camera.rotation.z);
+                _camera.rotation = new float4(_camera.rotation.x, _camera.rotation.y - ((float)_deltaTime * rotationSpeed), _camera.rotation.z, 1.0f);
             }
             if (InputManager.Instance.IsKeyPressed(Keys.E))
             {
-                _camera.rotation = new float3(_camera.rotation.x, _camera.rotation.y + ((float)_deltaTime * rotationSpeed), _camera.rotation.z);
+                _camera.rotation = new float4(_camera.rotation.x, _camera.rotation.y + ((float)_deltaTime * rotationSpeed), _camera.rotation.z, 1.0f);
             }
 
-            _camera.position = new float3(_camera.position.x + dx, _camera.position.y + dy, _camera.position.z + dz);
+            _camera.position = new float4(_camera.position.x + dx, _camera.position.y + dy, _camera.position.z + dz, 1.0f);
         }
 
         /// <summary>
