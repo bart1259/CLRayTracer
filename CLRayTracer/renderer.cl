@@ -28,7 +28,7 @@ struct Camera {
 
 
 __constant float3 lightPosition = (float3)(-5.0f, 10.0f, 5.0f);
-const float pi = 3.14159265358979f;
+__constant float pi = 3.14159265358979f;
 const sampler_t bgSampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_REPEAT | CLK_FILTER_LINEAR;
 
 //https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
@@ -280,7 +280,7 @@ __kernel void render(int width,
 		float oldy = ray.dir.y;
 		float oldz = ray.dir.z;
 
-		ray.dir.y = (oldy * cos(camera.rotation.x)) − (oldz * sin(camera.rotation.x));
+		ray.dir.y = (oldy * cos(camera.rotation.x)) - (oldz * sin(camera.rotation.x));
 		ray.dir.z = (oldy * sin(camera.rotation.x)) + (oldz * cos(camera.rotation.x));
 
 		ray.dir = normalize(ray.dir);
@@ -288,12 +288,11 @@ __kernel void render(int width,
 		oldx = ray.dir.x;
 		oldz = ray.dir.z;
 
-		ray.dir.x = (oldx * cos(camera.rotation.y)) − (oldz * sin(camera.rotation.y));
+		ray.dir.x = (oldx * cos(camera.rotation.y)) - (oldz * sin(camera.rotation.y));
 		ray.dir.z = (oldx * sin(camera.rotation.y)) + (oldz * cos(camera.rotation.y));
 
 		ray.dir = normalize(ray.dir);
 
 		output[id] = traceScene(&ray, spheres, sphereCount, disks, diskCount, backgroundImage, camera.depth);
-		
 	}
 }
