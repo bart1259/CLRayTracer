@@ -4,6 +4,10 @@ This repo contains the code for a Raytracer written in C# using Windows Forms. R
 
 <img src="https://i.imgur.com/MirRgbT.png" alt="drawing"/>
 
+## Video Demo
+
+[![Video](https://img.youtube.com/vi/m7P2yzJzI2M/0.jpg)](https://www.youtube.com/watch?v=m7P2yzJzI2M)
+
 ## What is Ray Tracing
 
 Ray tracing is a 3D rendering technique. Some alrternatives are rasterazation and ray marching. Ray tracing works by simulating individual light rays. Instead of originating the light rays at the light source, where they start their hourney in real world, the light rays start from camera. They then shoot out into the scene until they hit an object. If the object is reflective then that ray is reflected off of the surface and bounces again through the scene. If the object is refractive, think glass, then the ray is refracted through the object. The maximum number of bounces of light allowed is called the max depth.
